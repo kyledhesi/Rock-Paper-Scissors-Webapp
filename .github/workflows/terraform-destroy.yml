@@ -1,5 +1,8 @@
 name: 'Terraform Destroy'
 
+on:
+  workflow_dispatch:
+
 jobs:
   terraform-destroy:
     name: 'Terraform Destroy'
@@ -30,4 +33,4 @@ jobs:
 
       - name: Terraform Destroy
         working-directory: terraform
-        run: terraform destroy
+        run: terraform destroy -auto-approve
