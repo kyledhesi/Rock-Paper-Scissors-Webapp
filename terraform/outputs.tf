@@ -1,15 +1,15 @@
 output "s3_bucket" {
-    value = aws_s3_bucket.rock-paper-scissors-bucket.id
+  value = aws_s3_bucket.rock-paper-scissors-bucket.id
 }
 
 output "s3_bucket_website_url" {
-    value = aws_s3_bucket_website_configuration.website-config.website_endpoint
+  value = aws_s3_bucket_website_configuration.website-config.website_endpoint
 }
 
 output "cloudfront_distribution_id" {
-    value = aws_cloudfront_distribution.cdn.id
+  value = aws_cloudfront_distribution.cdn.id
 }
 
 output "aws_cloudfront_distribution_domain_name" {
-    value = aws_cloudfront_distribution.cdn.domain_name
+  value = aws_cloudfront_distribution.cdn.domain_name
 }

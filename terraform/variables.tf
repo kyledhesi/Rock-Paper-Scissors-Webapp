@@ -1,6 +1,6 @@
 variable "bucket_name" {
-    type = string
-    default = "my-rock-paper-scissors-webapp"
+  type    = string
+  default = "my-rock-paper-scissors-webapp"
 }
 
 locals {
