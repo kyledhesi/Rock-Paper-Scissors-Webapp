@@ -7,39 +7,25 @@ terraform {
   }
 }
 
-provider "aws" {
-  region  = "eu-west-2"
-  profile = "Kyle-Terraform"
-}
-
-locals {
-  website_files = toset([
-    "index.html",
-    "styles.css",
-    "index.js"
-  ])
-}
-
+# Create the S3 bucket with name 'my-rock-paper-scissors-webapp'
 resource "aws_s3_bucket" "rock-paper-scissors-bucket" {
-  bucket = "my-rock-paper-scissors-webapp"
+  bucket = var.bucket_name
 
   tags = {
     Name = "Rock Paper Scissors"
   }
 }
 
+# Configure S3 static website hosting with index file
 resource "aws_s3_bucket_website_configuration" "website-config" {
   bucket = aws_s3_bucket.rock-paper-scissors-bucket.id
 
   index_document {
     suffix = "index.html"
   }
-
-  error_document {
-    key = "error.html"
-  }
 }
 
+# Upload website files to S3 bucket
 resource "aws_s3_object" "website_files" {
   for_each = local.website_files
 
@@ -54,6 +40,7 @@ resource "aws_s3_object" "website_files" {
   )
 }
 
+# Creating origin access control for CloudFront to access the S3 bucket
 resource "aws_cloudfront_origin_access_control" "default" {
   name                              = "s3-oac"
   origin_access_control_origin_type = "s3"
@@ -61,6 +48,7 @@ resource "aws_cloudfront_origin_access_control" "default" {
   signing_protocol                  = "sigv4"
 }
 
+# Create a CloudFront distribution to deliver website content through a CDN
 resource "aws_cloudfront_distribution" "cdn" {
   origin {
     domain_name              = aws_s3_bucket.rock-paper-scissors-bucket.bucket_regional_domain_name
@@ -98,6 +86,7 @@ resource "aws_cloudfront_distribution" "cdn" {
   }
 }
 
+# Allow CloudFront to read objects from the S3 bucket
 resource "aws_s3_bucket_policy" "website_policy" {
   bucket = aws_s3_bucket.rock-paper-scissors-bucket.id
   policy = jsonencode({
